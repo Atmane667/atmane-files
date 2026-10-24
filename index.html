@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#080914">
+<title>ATMANE FILES — Personal dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--bg:#080914;--panel:#111326;--panel2:#191b35;--line:#2b2d4b;--text:#f2f1ff;--muted:#9698b4;--mint:#a78bfa;--blue:#67d5ff;--pink:#f49ac2;--yellow:#f6ce85;--radius:22px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% -10%,#30245a 0,transparent 38%),radial-gradient(ellipse at -10% 30%,#142d50 0,transparent 34%),var(--bg);color:var(--text);font-family:Manrope,system-ui,sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+aside{padding:28px 18px;border-right:1px solid #ffffff12;background:#090e14aa;backdrop-filter:blur(18px);position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 10px 34px}.brandmark{height:42px;width:42px;border-radius:14px;background:linear-gradient(135deg,var(--mint),#67d5ff);display:grid;place-items:center;color:#07120f;font-weight:900;letter-spacing:-2px;font-size:18px;box-shadow:0 8px 28px #a78bfa33}.brand strong{display:block;letter-spacing:2px;font-size:13px}.brand small{color:var(--muted);font-size:10px;letter-spacing:2px}
+.navlabel{font:11px 'DM Mono';color:#647481;padding:14px 12px 8px;letter-spacing:1.5px}.nav{display:grid;gap:6px}.nav button{background:none;border:0;color:#9eacb8;padding:13px 14px;text-align:left;border-radius:13px;display:flex;gap:12px;align-items:center;font-weight:700;font-size:13px;transition:.2s}.nav button:hover{background:#ffffff09;color:white}.nav button.active{background:linear-gradient(100deg,#a78bfa20,#67d5ff08);color:var(--mint);box-shadow:inset 2px 0 var(--mint)}.ico{width:20px;text-align:center;font-size:16px}
+.sidebottom{position:absolute;bottom:24px;left:24px;right:24px;border:1px solid var(--line);border-radius:16px;padding:14px;color:var(--muted);font-size:11px;line-height:1.6}.online{color:var(--mint);font:10px 'DM Mono';letter-spacing:1px}
+main{padding:34px clamp(20px,4vw,62px) 60px;max-width:1600px;width:100%;margin:auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}.eyebrow{font:11px 'DM Mono';letter-spacing:2px;color:var(--mint);text-transform:uppercase}.topright{display:flex;align-items:center;gap:12px}.date{font:11px 'DM Mono';color:var(--muted)}.avatar{width:38px;height:38px;border-radius:13px;background:#1e3440;border:1px solid #42645e;color:var(--mint);display:grid;place-items:center;font-weight:800}
+h1{font-size:clamp(28px,4vw,46px);line-height:1.1;letter-spacing:-2px;margin:8px 0 10px}h1 span{color:var(--mint)}.sub{color:var(--muted);font-size:13px;line-height:1.7;margin:0}
+.hero{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;margin-bottom:28px}.hero-actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:#ffffff08;color:var(--text);padding:11px 15px;border-radius:12px;font-size:12px;font-weight:800;transition:.2s}.btn:hover{transform:translateY(-2px);border-color:#5a8279}.btn.primary{background:var(--mint);color:#100b20;border-color:var(--mint)}.btn.danger{color:#ff9d9d}
+.grid{display:grid;gap:15px}.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin:25px 0}.card{background:linear-gradient(145deg,#141e28ed,#0e151ded);border:1px solid #ffffff12;border-radius:var(--radius);padding:20px;box-shadow:0 14px 40px #00000018;min-width:0}.stathead{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;font-weight:700}.staticon{height:30px;width:30px;display:grid;place-items:center;border-radius:10px;background:#ffffff0b}.statvalue{font-size:30px;font-weight:800;letter-spacing:-1.5px;margin:16px 0 3px}.statfoot{color:var(--muted);font-size:10px}.mint{color:var(--mint)}.blue{color:var(--blue)}.pink{color:var(--pink)}.yellow{color:var(--yellow)}
+.contentgrid{grid-template-columns:1.45fr 1fr}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.sectionhead h2{font-size:15px;margin:0;letter-spacing:-.3px}.sectionhead span{color:var(--muted);font:10px 'DM Mono'}
+.chartwrap{height:225px;position:relative}.chartwrap canvas{width:100%;height:100%}.empty{color:var(--muted);font-size:12px;text-align:center;padding:38px 10px;border:1px dashed #ffffff20;border-radius:15px}
+.activity{display:grid;gap:12px}.activityitem{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:#ffffff05}.activityicon{width:38px;height:38px;display:grid;place-items:center;background:#ffffff0b;border-radius:12px}.activityitem strong{display:block;font-size:12px}.activityitem small{color:var(--muted);font-size:10px}.activityitem time{margin-left:auto;color:#83949e;font:10px 'DM Mono'}
+.page{display:none}.page.active{display:block;animation:fade .25s ease}@keyframes fade{from{opacity:.3;transform:translateY(5px)}to{opacity:1;transform:none}}
+.pagehead{margin:12px 0 24px}.pagehead h1{font-size:32px}.two{grid-template-columns:1fr 1fr}.three{grid-template-columns:repeat(3,1fr)}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{display:grid;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.7px;text-transform:uppercase}.field input,.field select,.field textarea{width:100%;background:#0a1118;border:1px solid var(--line);color:var(--text);border-radius:11px;padding:12px 13px;outline:none;font-size:12px}.field input:focus,.field textarea:focus,.field select:focus{border-color:#a78bfa;box-shadow:0 0 0 3px #a78bfa20}.field textarea{min-height:84px;resize:vertical}
+.formactions{display:flex;gap:8px;margin-top:15px}.table{width:100%;border-collapse:collapse;font-size:11px}.table th{text-align:left;color:var(--muted);font:10px 'DM Mono';padding:12px 9px;border-bottom:1px solid var(--line)}.table td{padding:13px 9px;border-bottom:1px solid #ffffff0c}.table tr:last-child td{border:0}.tag{display:inline-block;padding:5px 8px;border-radius:20px;background:#a78bfa20;color:var(--mint);font-size:9px;font-weight:800}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.photo{min-height:160px;background:#0a1118;border:1px dashed #33434f;border-radius:16px;overflow:hidden;position:relative;display:grid;place-items:center;color:var(--muted);font-size:11px}.photo img{width:100%;height:190px;object-fit:cover}.photo button{position:absolute;top:8px;right:8px;background:#0009;border:0;color:white;border-radius:8px;padding:6px}
+.toast{position:fixed;bottom:22px;right:22px;background:#d8fff0;color:#07140f;padding:12px 18px;border-radius:12px;font-size:12px;font-weight:800;box-shadow:0 12px 35px #0008;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none}.toast.show{opacity:1;transform:none}
+.mini{color:var(--muted);font-size:10px;line-height:1.7}.pill{display:inline-flex;gap:7px;align-items:center;color:var(--mint);background:#a78bfa18;border:1px solid #a78bfa35;padding:7px 10px;border-radius:30px;font:10px 'DM Mono'}
+
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}
+.calendar-grid .dayname{text-align:center;color:var(--muted);font:10px 'DM Mono';padding:8px 0}
+.calendar-grid .day{min-height:76px;border:1px solid #ffffff10;background:#0a1118;border-radius:12px;padding:8px;color:var(--text);text-align:left;position:relative;font-size:11px}
+.calendar-grid .day.muted{opacity:.25}.calendar-grid .day.selected{border-color:var(--mint);box-shadow:0 0 0 2px #a78bfa20}.calendar-grid .day.today:after{content:'';position:absolute;right:8px;top:8px;width:5px;height:5px;background:var(--mint);border-radius:50%}
+.dots{display:flex;gap:4px;margin-top:12px}.dots i,.legend i{width:6px;height:6px;border-radius:50%;display:inline-block}.legend{display:flex;gap:16px;margin-top:17px;color:var(--muted);font-size:10px;flex-wrap:wrap}.legend i{width:7px;height:7px;margin-right:5px}
+@media(max-width:650px){.calendar-grid{gap:4px}.calendar-grid .day{min-height:53px;padding:5px;font-size:10px}.dots{margin-top:8px}.calendar-grid .dayname{font-size:8px}}
+
+@media(max-width:950px){.app{grid-template-columns:1fr}aside{height:auto;position:relative;padding:12px 16px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:4px 8px 12px}.navlabel,.sidebottom{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:10px}.nav button .ico{display:none}main{padding:24px 18px 45px}.stats{grid-template-columns:repeat(2,1fr)}.contentgrid,.two{grid-template-columns:1fr}}
+@media(max-width:560px){.hero{display:block}.hero-actions{margin-top:16px}.stats{gap:9px}.card{padding:15px}.statvalue{font-size:25px}.three{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.photos{grid-template-columns:1fr 1fr}.topbar{margin-bottom:20px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand"><div class="brandmark">AF</div><div><strong>ATMANE FILES</strong><small>PERSONAL SYSTEM</small></div></div>
+  <div class="navlabel">WORKSPACE</div>
+  <nav class="nav" id="nav">
+    <button class="active" data-page="overview"><span class="ico">◫</span>Vue générale</button>
+    <button data-page="profile"><span class="ico">◉</span>Profil</button>
+    <button data-page="photos"><span class="ico">▧</span>Photos</button>
+    <button data-page="health"><span class="ico">✚</span>Santé</button>
+    <button data-page="sleep"><span class="ico">☾</span>Sommeil</button>
+    <button data-page="gym"><span class="ico">⌁</span>Performances</button>
+    <button data-page="history"><span class="ico">◷</span>Historique</button>
+    <button data-page="calendar"><span class="ico">▦</span>Calendrier</button>
+    <button data-page="insights"><span class="ico">⌁</span>Statistiques</button>
+    <button data-page="ai"><span class="ico">✦</span>ATMANE AI</button>
+    <button data-page="settings"><span class="ico">⚙</span>Paramètres</button>
+  </nav>
+  <div class="sidebottom"><div class="online">● LOCAL STORAGE ACTIVE</div><div>Vos données restent sur cet appareil. Pensez à exporter une sauvegarde régulièrement.</div></div>
+</aside>
+<main>
+  <div class="topbar"><div class="eyebrow">PERSONAL PERFORMANCE / 003</div><div class="topright"><span class="date" id="today"></span><div class="avatar">AF</div></div></div>
+
+  <section class="page active" id="overview">
+    <div class="hero"><div><div class="pill">✦ YOUR PERSONAL DASHBOARD</div><h1>Comprendre. Suivre.<br><span>Progresser.</span></h1><p class="sub">Un espace clair pour centraliser tes habitudes, tes entraînements et ton suivi personnel.</p></div><div class="hero-actions"><button class="btn" onclick="exportData()">↓ Exporter les données</button><button class="btn primary" onclick="go('gym')">＋ Ajouter une séance</button></div></div>
+    <div class="grid stats">
+      <div class="card"><div class="stathead">POIDS ACTUEL <span class="staticon">↗</span></div><div class="statvalue" id="sWeight">— <small style="font-size:13px;color:var(--muted)">kg</small></div><div class="statfoot">Dernière valeur enregistrée</div></div>
+      <div class="card"><div class="stathead">SOMMEIL MOYEN <span class="staticon">☾</span></div><div class="statvalue blue" id="sSleep">—</div><div class="statfoot">Moyenne de tes dernières nuits</div></div>
+      <div class="card"><div class="stathead">SÉANCES LOGGÉES <span class="staticon">⌁</span></div><div class="statvalue mint" id="sGym">0</div><div class="statfoot">Historique total</div></div>
+      <div class="card"><div class="stathead">ENTRÉES SANTÉ <span class="staticon">✚</span></div><div class="statvalue pink" id="sHealth">0</div><div class="statfoot">Notes, traitements et compléments</div></div>
+    </div>
+    <div class="grid contentgrid">
+      <div class="card"><div class="sectionhead"><h2>Rythme de sommeil</h2><span>DERNIÈRES NUITS</span></div><div class="chartwrap"><canvas id="weightChart"></canvas></div></div>
+      <div class="card"><div class="sectionhead"><h2>Activité récente</h2><span>DERNIÈRES ENTRÉES</span></div><div class="activity" id="recent"></div></div>
+    </div>
+    <div class="grid two" style="margin-top:15px">
+      <div class="card"><div class="sectionhead"><h2>Progression des charges</h2><span>GYM / TENDANCE</span></div><div class="chartwrap"><canvas id="gymChart"></canvas></div></div>
+      <div class="card"><div class="sectionhead"><h2>Raccourcis</h2><span>QUICK ACTIONS</span></div><div class="hero-actions"><button class="btn" onclick="go('profile')">＋ Profil</button><button class="btn" onclick="go('sleep')">＋ Sommeil</button><button class="btn" onclick="go('health')">＋ Santé</button><button class="btn" onclick="go('photos')">＋ Photo</button></div></div>
+      <div class="card"><div class="sectionhead"><h2>Ton espace</h2><span>PRIVÉ</span></div><p class="mini">ATMANE FILES fonctionne directement dans ton navigateur. Aucune création de compte, aucun envoi automatique vers un serveur. Les données sont enregistrées localement sur cet appareil.</p></div>
+    </div>
+  </section>
+
+  <section class="page" id="profile">
+    <div class="pagehead"><div class="eyebrow">PERSONAL DATA</div><h1>Profil <span class="mint">personnel.</span></h1><p class="sub">Renseigne les informations que tu souhaites suivre. Les champs sont facultatifs.</p></div>
+    <div class="card"><div class="sectionhead"><h2>Informations générales</h2><span>PROFILE / 01</span></div><form id="profileForm"><div class="formgrid">
+      <div class="field"><label>Prénom ou pseudo</label><input name="name" placeholder="Ton pseudo"></div><div class="field"><label>Âge</label><input name="age" type="number" min="1" max="120" placeholder="—"></div>
+      <div class="field"><label>Taille (cm)</label><input name="height" type="number" placeholder="—"></div><div class="field"><label>Poids (kg)</label><input name="weight" type="number" step=".1" placeholder="—"></div>
+      <div class="field"><label>Niveau d'activité</label><select name="activity"><option value="">Sélectionner</option><option>Peu actif</option><option>Modérément actif</option><option>Actif</option><option>Très actif</option></select></div>
+      <div class="field"><label>Objectif personnel</label><input name="goal" placeholder="Ex. régularité, force, sommeil…"></div>
+      </div><div class="formactions"><button class="btn primary">Enregistrer le profil</button></div></form></div>
+  </section>
+
+  <section class="page" id="photos">
+    <div class="pagehead"><div class="eyebrow">VISUAL JOURNAL</div><h1>Galerie <span class="mint">personnelle.</span></h1><p class="sub">Ajoute des photos et une date pour garder un journal visuel privé.</p></div>
+    <div class="card"><div class="sectionhead"><h2>Ajouter des photos</h2><span>JPG · PNG · WEBP</span></div><div class="formgrid"><div class="field"><label>Catégorie</label><select id="photoCategory"><option>Entraînement</option><option>Visage / peau</option><option>Autre</option></select></div><div class="field"><label>Date</label><input id="photoDate" type="date"></div><div class="field full"><label>Choisir une ou plusieurs images</label><input id="photoFiles" type="file" accept="image/*" multiple></div></div><div class="formactions"><button class="btn primary" onclick="addPhotos()">Ajouter à la galerie</button></div><p class="mini">Les photos restent dans le stockage local de ce navigateur. Pour les conserver durablement, garde aussi les originaux sur ton appareil.</p></div>
+    <div class="card" style="margin-top:15px"><div class="sectionhead"><h2>Ta galerie</h2><span id="photoCount">0 PHOTO</span></div><div class="photos" id="photoGrid"><div class="empty">Aucune photo pour le moment.</div></div></div>
+  </section>
+
+  <section class="page" id="health">
+    <div class="pagehead"><div class="eyebrow">WELLNESS LOG</div><h1>Suivi <span class="mint">santé.</span></h1><p class="sub">Consigne tes traitements, compléments et notes utiles.</p></div>
+    <div class="grid two"><div class="card"><div class="sectionhead"><h2>Nouvelle entrée</h2><span>HEALTH / 02</span></div><form id="healthForm"><div class="formgrid"><div class="field"><label>Type</label><select name="type"><option>Médicament</option><option>Complément</option><option>Rendez-vous</option><option>Note santé</option></select></div><div class="field"><label>Date</label><input name="date" type="date" required></div><div class="field full"><label>Nom / sujet</label><input name="title" required placeholder="Nom ou sujet"></div><div class="field full"><label>Notes</label><textarea name="note" placeholder="Dose prescrite, remarque, suivi…"></textarea></div></div><div class="formactions"><button class="btn primary">Ajouter</button></div></form></div>
+    <div class="card"><div class="sectionhead"><h2>Journal santé</h2><span>LOGBOOK</span></div><div id="healthList" class="activity"></div></div></div>
+    <p class="mini" style="margin-top:14px">Ce journal sert à organiser tes informations. Il ne remplace pas l'avis d'un médecin ou d'un pharmacien. Ne modifie pas un traitement sans leur avis.</p>
+  </section>
+
+  <section class="page" id="sleep">
+    <div class="pagehead"><div class="eyebrow">RECOVERY TRACKER</div><h1>Sommeil <span class="mint"> & récupération.</span></h1><p class="sub">Note tes nuits pour observer tes habitudes au fil du temps.</p></div>
+    <div class="grid two"><div class="card"><div class="sectionhead"><h2>Enregistrer une nuit</h2><span>SLEEP / 03</span></div><form id="sleepForm"><div class="formgrid"><div class="field"><label>Date du réveil</label><input name="date" type="date" required></div><div class="field"><label>Durée (heures)</label><input name="hours" type="number" min="0" max="24" step=".25" placeholder="Ex. 8" required></div><div class="field"><label>Qualité ressentie</label><select name="quality"><option>Bonne</option><option>Moyenne</option><option>Difficile</option></select></div><div class="field"><label>Énergie au réveil</label><select name="energy"><option>Bonne</option><option>Moyenne</option><option>Basse</option></select></div><div class="field full"><label>Notes</label><textarea name="note" placeholder="Réveils, routine, ressenti…"></textarea></div></div><div class="formactions"><button class="btn primary">Enregistrer la nuit</button></div></form></div>
+    <div class="card"><div class="sectionhead"><h2>Historique du sommeil</h2><span>LAST ENTRIES</span></div><div id="sleepList" class="activity"></div></div></div>
+  </section>
+
+  <section class="page" id="gym">
+    <div class="pagehead"><div class="eyebrow">TRAINING LOG</div><h1>Performances <span class="mint">gym.</span></h1><p class="sub">Garde une trace de tes séances, exercices et sensations.</p></div>
+    <div class="grid two"><div class="card"><div class="sectionhead"><h2>Nouvelle performance</h2><span>GYM / 04</span></div><form id="gymForm"><div class="formgrid"><div class="field"><label>Date</label><input name="date" type="date" required></div><div class="field"><label>Groupe musculaire</label><select name="group"><option>Dos</option><option>Pectoraux</option><option>Épaules</option><option>Bras</option><option>Jambes</option><option>Abdominaux</option><option>Full body</option><option>Cardio</option></select></div><div class="field full"><label>Exercice</label><input name="exercise" required placeholder="Ex. Développé couché"></div><div class="field"><label>Charge (kg)</label><input name="load" type="number" min="0" step=".5" placeholder="—"></div><div class="field"><label>Séries × répétitions</label><input name="sets" placeholder="Ex. 3 × 10"></div><div class="field full"><label>Notes</label><textarea name="note" placeholder="Technique, sensations, progression…"></textarea></div></div><div class="formactions"><button class="btn primary">Ajouter la performance</button></div></form></div>
+    <div class="card"><div class="sectionhead"><h2>Dernières séances</h2><span>TRAINING HISTORY</span></div><div id="gymList" class="activity"></div></div></div>
+  </section>
+
+  <section class="page" id="history">
+    <div class="pagehead"><div class="eyebrow">DATA ARCHIVE</div><h1>Historique <span class="mint">global.</span></h1><p class="sub">Retrouve tes données et exporte une sauvegarde.</p></div>
+    <div class="grid two"><div class="card"><div class="sectionhead"><h2>Poids enregistré</h2><span>KG</span></div><div id="weightList" class="activity"></div></div><div class="card"><div class="sectionhead"><h2>Sommeil enregistré</h2><span>HOURS</span></div><div id="sleepHistory" class="activity"></div></div></div>
+    <div class="card" style="margin-top:15px"><div class="sectionhead"><h2>Gestion des données</h2><span>BACKUP</span></div><p class="mini">Télécharge une copie JSON de tes données pour la conserver ou la transférer. L'import remplacera les données actuellement enregistrées.</p><div class="hero-actions"><button class="btn primary" onclick="exportData()">↓ Exporter une sauvegarde</button><label class="btn">↑ Importer une sauvegarde<input type="file" accept=".json,application/json" onchange="importData(event)" hidden></label><button class="btn danger" onclick="clearData()">Réinitialiser</button></div></div>
+  </section>
+
+
+  <section class="page" id="calendar">
+    <div class="pagehead"><div class="eyebrow">ACTIVITY PLANNER</div><h1>Calendrier <span class="mint">personnel.</span></h1><p class="sub">Retrouve tes séances, tes nuits et tes notes sur une vue mensuelle.</p></div>
+    <div class="card">
+      <div class="sectionhead"><button class="btn" onclick="changeMonth(-1)">←</button><h2 id="calendarTitle">Mois</h2><button class="btn" onclick="changeMonth(1)">→</button></div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+      <div class="legend"><span><i style="background:#a78bfa"></i> Entraînement</span><span><i style="background:#67d5ff"></i> Sommeil</span><span><i style="background:#f49ac2"></i> Santé</span></div>
+    </div>
+    <div class="card" style="margin-top:15px"><div class="sectionhead"><h2>Entrées du jour sélectionné</h2><span id="selectedDateLabel">—</span></div><div id="calendarEvents" class="activity"></div></div>
+  </section>
+
+  <section class="page" id="insights">
+    <div class="pagehead"><div class="eyebrow">PERSONAL ANALYTICS</div><h1>Statistiques <span class="mint">avancées.</span></h1><p class="sub">Des tendances descriptives à partir des entrées que tu as enregistrées.</p></div>
+    <div class="grid stats">
+      <div class="card"><div class="stathead">SÉANCES / 30 JOURS</div><div class="statvalue mint" id="monthGym">0</div><div class="statfoot">Entraînements consignés</div></div>
+      <div class="card"><div class="stathead">SOMMEIL MOYEN / 30 JOURS</div><div class="statvalue blue" id="monthSleep">—</div><div class="statfoot">Heures par nuit</div></div>
+      <div class="card"><div class="stathead">EXERCICES DIFFÉRENTS</div><div class="statvalue pink" id="exerciseCount">0</div><div class="statfoot">Noms distincts dans le journal</div></div>
+      <div class="card"><div class="stathead">JOURS AVEC ENTRÉES</div><div class="statvalue yellow" id="activeDays">0</div><div class="statfoot">Sur les 30 derniers jours</div></div>
+    </div>
+    <div class="grid two">
+      <div class="card"><div class="sectionhead"><h2>Sommeil dans le temps</h2><span>10 DERNIÈRES NUITS</span></div><div class="chartwrap"><canvas id="insightSleepChart"></canvas></div></div>
+      <div class="card"><div class="sectionhead"><h2>Charges consignées</h2><span>10 DERNIÈRES VALEURS</span></div><div class="chartwrap"><canvas id="insightGymChart"></canvas></div></div>
+    </div>
+    <div class="card" style="margin-top:15px"><div class="sectionhead"><h2>Bilan de la semaine</h2><span>RÉSUMÉ AUTOMATIQUE</span></div><div id="weeklyReport" class="mini"></div><div class="formactions"><button class="btn primary" onclick="copyWeeklyReport()">Copier le bilan</button><button class="btn" onclick="go('ai');$('#aiContext').checked=true">Analyser avec ATMANE AI</button></div></div>
+  </section>
+
+  <section class="page" id="settings">
+    <div class="pagehead"><div class="eyebrow">PREFERENCES & DATA</div><h1>Paramètres <span class="mint">du système.</span></h1><p class="sub">Personnalise ton espace et gère tes données.</p></div>
+    <div class="grid two">
+      <div class="card"><div class="sectionhead"><h2>Apparence</h2><span>DISPLAY</span></div>
+        <div class="field"><label>Accent principal</label><select id="accentChoice"><option value="violet">Violet électrique</option><option value="mint">Vert menthe</option><option value="blue">Bleu glacier</option><option value="rose">Rose doux</option></select></div>
+        <div class="formactions"><button class="btn primary" onclick="setAccent()">Appliquer le thème</button></div>
+      </div>
+      <div class="card"><div class="sectionhead"><h2>Sauvegarde</h2><span>LOCAL DATA</span></div><p class="mini">Les données sont stockées dans ce navigateur. Exporte régulièrement une copie JSON. Pour les utiliser sur plusieurs appareils, il faudra ensuite mettre en place un compte et une base de données sécurisée.</p><div class="hero-actions"><button class="btn primary" onclick="exportData()">↓ Exporter</button><label class="btn">↑ Importer<input type="file" accept=".json,application/json" onchange="importData(event)" hidden></label></div></div>
+    </div>
+    <div class="card" style="margin-top:15px"><div class="sectionhead"><h2>À propos</h2><span>ATMANE FILES 4.0</span></div><p class="mini">Version 4.0 · Prototype personnel. L'assistant IA nécessite le serveur Node.js et une clé API configurée côté serveur. Les informations de santé sont sensibles : ne partage que ce qui est nécessaire. L'application ne remplace pas un professionnel de santé.</p></div>
+  </section>
+
+  <section class="page" id="ai">
+    <div class="pagehead"><div class="eyebrow">PERSONAL AI COMPANION</div><h1>ATMANE <span class="mint">AI.</span></h1><p class="sub">Un assistant pour comprendre tes habitudes, organiser tes observations et trouver des pistes d'amélioration raisonnables.</p></div>
+    <div class="grid two">
+      <div class="card">
+        <div class="sectionhead"><h2>Conversation</h2><span class="pill">✦ IA CONNECTÉE</span></div>
+        <div id="aiMessages" style="height:350px;overflow:auto;display:flex;flex-direction:column;gap:12px;padding:8px 3px 16px">
+          <div class="activityitem"><div class="activityicon">✦</div><div><strong>ATMANE AI</strong><small>Salut ! Tu peux me parler de ton sommeil, de tes entraînements, de tes habitudes ou poser une question générale sur ta santé. Je ne remplace pas un professionnel de santé.</small></div></div>
+        </div>
+        <form id="aiForm">
+          <div class="field"><label>Ton message</label><textarea id="aiPrompt" maxlength="2500" required placeholder="Ex. J'ai eu du mal à m'endormir cette semaine. Quelles habitudes simples pourrais-je essayer ?"></textarea></div>
+          <label style="display:flex;gap:9px;align-items:flex-start;color:var(--muted);font-size:11px;margin:13px 0"><input type="checkbox" id="aiConsent" required style="accent-color:#a78bfa;margin-top:2px"> Je comprends que mon message sera envoyé à un service d'IA externe pour générer une réponse. Je n'envoie que les informations nécessaires.</label>
+          <label style="display:flex;gap:9px;align-items:flex-start;color:var(--muted);font-size:11px;margin:10px 0"><input type="checkbox" id="aiContext" style="accent-color:#a78bfa;margin-top:2px"> Joindre un résumé de mes données ATMANE FILES (sans photos).</label>
+          <div class="formactions"><button class="btn primary" id="aiSend">Envoyer à ATMANE AI ↗</button><button type="button" class="btn" onclick="clearChat()">Effacer la conversation</button></div>
+        </form>
+      </div>
+      <div class="grid" style="align-content:start">
+        <div class="card"><div class="sectionhead"><h2>Ce que l'IA peut faire</h2><span>CAPABILITIES</span></div>
+          <div class="activity">
+            <div class="activityitem"><div class="activityicon">☾</div><div><strong>Sommeil & habitudes</strong><small>Repérer des tendances et proposer des routines simples.</small></div></div>
+            <div class="activityitem"><div class="activityicon">⌁</div><div><strong>Entraînement</strong><small>Résumer tes séances et t'aider à suivre ta progression sans pousser au surentraînement.</small></div></div>
+            <div class="activityitem"><div class="activityicon">✚</div><div><strong>Journal santé</strong><small>Mettre tes observations en ordre et préparer des questions à poser à un professionnel.</small></div></div>
+          </div>
+        </div>
+        <div class="card"><div class="sectionhead"><h2>Confidentialité & limites</h2><span>IMPORTANT</span></div>
+          <p class="mini">Tes messages sont transmis au serveur configuré pour ce site puis au fournisseur d'IA. Le résumé de suivi n'est joint que si tu coches la case. Les photos ne sont jamais jointes. N'inscris pas ton nom complet, ton adresse, tes identifiants ou des informations très personnelles.</p>
+          <p class="mini">L'IA ne pose pas de diagnostic, ne juge pas si un traitement est adapté et ne doit pas conseiller de commencer, arrêter ou modifier un médicament. Pour une inquiétude médicale, demande conseil à un parent ou à un professionnel de santé.</p>
+          <div class="pill">● CLÉ API PROTÉGÉE CÔTÉ SERVEUR</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</div>
+<div class="toast" id="toast">Enregistré</div>
+<script>
+const KEY='atmane_files_v3'; // Compatibilité avec les données des versions précédentes
+let data={profile:{},health:[],sleep:[],gym:[],photos:[]};
+try{data={...data,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function localISODate(d=new Date()){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
+const today=localISODate();$('#today').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});document.querySelectorAll('input[type=date]').forEach(x=>x.value=today);
+function save(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();toast('Données enregistrées');
+ }catch(err){
+  console.error('Local storage save failed:',err);
+  toast('Stockage plein : exporte tes données ou réduis les photos');
+ }
+}
+function toast(t){let x=$('#toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1800)}
+function go(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='overview')drawChart();if(id==='calendar')renderCalendar();if(id==='insights')renderInsights()}
+$('#nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)go(b.dataset.page)});
+$('#historySearch')?.addEventListener('input',render);
+$('#profileForm').addEventListener('submit',e=>{e.preventDefault();data.profile=Object.fromEntries(new FormData(e.target));save()});
+$('#healthForm').addEventListener('submit',e=>{e.preventDefault();data.health.unshift({...Object.fromEntries(new FormData(e.target)),id:Date.now()});e.target.reset();e.target.elements.date.value=today;save()});
+$('#sleepForm').addEventListener('submit',e=>{e.preventDefault();data.sleep.unshift({...Object.fromEntries(new FormData(e.target)),id:Date.now()});e.target.reset();e.target.elements.date.value=today;save()});
+$('#gymForm').addEventListener('submit',e=>{e.preventDefault();data.gym.unshift({...Object.fromEntries(new FormData(e.target)),id:Date.now()});e.target.reset();e.target.elements.date.value=today;save()});
+function row(icon,title,sub,date,id,type){return `<div class="activityitem"><div class="activityicon">${icon}</div><div style="min-width:0"><strong>${esc(title)}</strong><small>${esc(sub||'')}</small></div><time>${esc(date||'')}</time>${id?`<button class="btn" style="padding:5px 8px" onclick="removeItem('${type}',${id})">×</button>`:''}</div>`}
+function removeItem(type,id){if(!confirm('Supprimer cette entrée ?'))return;data[type]=data[type].filter(x=>x.id!==id);save()}
+function render(){
+let p=data.profile||{};$('#sWeight').innerHTML=p.weight?`${esc(p.weight)} <small style="font-size:13px;color:var(--muted)">kg</small>`:'—';$('#sGym').textContent=data.gym.length;$('#sHealth').textContent=data.health.length;
+let sl=data.sleep.slice(0,7),avg=sl.length?sl.reduce((a,x)=>a+Number(x.hours||0),0)/sl.length:0;$('#sSleep').textContent=sl.length?avg.toFixed(1)+' h':'—';
+let f=$('#profileForm');Object.keys(p).forEach(k=>{if(f.elements[k])f.elements[k].value=p[k]});
+$('#healthList').innerHTML=data.health.length?data.health.map(x=>row('✚',x.title,x.type+' · '+x.note,x.date,x.id,'health')).join(''):'<div class="empty">Aucune entrée santé.</div>';
+$('#sleepList').innerHTML=data.sleep.length?data.sleep.slice(0,12).map(x=>row('☾',x.hours+' h · '+x.quality,'Énergie : '+x.energy+' · '+x.note,x.date,x.id,'sleep')).join(''):'<div class="empty">Aucune nuit enregistrée.</div>';
+$('#gymList').innerHTML=data.gym.length?data.gym.slice(0,12).map(x=>row('⌁',x.exercise,x.group+' · '+(x.load||'—')+' kg · '+x.sets,x.date,x.id,'gym')).join(''):'<div class="empty">Aucune performance enregistrée.</div>';
+$('#weightList').innerHTML=p.weight?row('↗','Poids actuel',p.name||'Profil',today,null,''):'<div class="empty">Ajoute ton poids dans Profil.</div>';
+const query=($('#historySearch')?.value||'').trim().toLowerCase();
+const historyItems=[
+ ...data.gym.map(x=>({type:'gym',icon:'⌁',title:x.exercise,sub:(x.group||'')+' · '+(x.load||'—')+' kg · '+(x.sets||''),date:x.date,id:x.id})),
+ ...data.sleep.map(x=>({type:'sleep',icon:'☾',title:(x.hours||'—')+' h de sommeil',sub:(x.quality||'')+' · '+(x.note||''),date:x.date,id:x.id})),
+ ...data.health.map(x=>({type:'health',icon:'✚',title:x.title,sub:(x.type||'')+' · '+(x.note||''),date:x.date,id:x.id}))
+].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+const filtered=historyItems.filter(x=>!query||[x.title,x.sub,x.date].join(' ').toLowerCase().includes(query));
+$('#sleepHistory').innerHTML=filtered.length?filtered.map(x=>row(x.icon,x.title,x.sub,x.date,x.id,x.type)).join(''):'<div class="empty">Aucun résultat pour cette recherche.</div>';
+$('#recent').innerHTML=[...data.gym.slice(0,3).map(x=>({i:'⌁',t:x.exercise,s:x.group,d:x.date})),...data.sleep.slice(0,2).map(x=>({i:'☾',t:x.hours+' h de sommeil',s:x.quality,d:x.date})),...data.health.slice(0,2).map(x=>({i:'✚',t:x.title,s:x.type,d:x.date}))].slice(0,5).map(x=>row(x.i,x.t,x.s,x.d)).join('')||'<div class="empty">Tes nouvelles entrées apparaîtront ici.</div>';
+$('#photoCount').textContent=data.photos.length+' PHOTO(S)';$('#photoGrid').innerHTML=data.photos.length?data.photos.map(x=>`<div class="photo"><img src="${x.src}" alt="Photo"><button onclick="removePhoto(${x.id})">×</button><div style="position:absolute;bottom:0;left:0;right:0;background:#05090dcc;padding:8px;color:white;font-size:10px">${esc(x.category)} · ${esc(x.date)}</div></div>`).join(''):'<div class="empty" style="grid-column:1/-1">Aucune photo pour le moment.</div>';
+drawChart();renderCalendar();renderInsights()
+}
+async function compressPhoto(file){
+ return new Promise((resolve,reject)=>{
+  if(!file.type.startsWith('image/')) return reject(new Error('Format non pris en charge'));
+  const reader=new FileReader();
+  reader.onerror=()=>reject(new Error('Lecture impossible'));
+  reader.onload=()=>{
+   const img=new Image();
+   img.onerror=()=>reject(new Error('Image illisible'));
+   img.onload=()=>{
+    const max=1400,scale=Math.min(1,max/Math.max(img.width,img.height));
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));
+    canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+    resolve(canvas.toDataURL('image/jpeg',0.78));
+   };
+   img.src=reader.result;
+  };
+  reader.readAsDataURL(file);
+ });
+}
+async function addPhotos(){
+ const files=[...$('#photoFiles').files];
+ if(!files.length)return toast('Choisis une image');
+ if(data.photos.length+files.length>20)return toast('Limite de 20 photos pour préserver le stockage');
+ for(const file of files){
+  try{
+   const src=await compressPhoto(file);
+   data.photos.unshift({id:Date.now()+Math.random(),src,category:$('#photoCategory').value,date:$('#photoDate').value||today});
+  }catch(err){toast(err.message||'Photo impossible à ajouter')}
+ }
+ $('#photoFiles').value='';save();
+}
+function removePhoto(id){data.photos=data.photos.filter(x=>x.id!==id);save()}
+function paintLineChart(canvasId, vals, color, emptyText, suffix=''){
+ let c=$('#'+canvasId); if(!c)return;
+ let ctx=c.getContext('2d'),w=c.clientWidth,h=c.clientHeight,dpr=window.devicePixelRatio||1;
+ c.width=w*dpr;c.height=h*dpr;ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);
+ if(vals.length<2){ctx.fillStyle='#9698b4';ctx.font='12px Manrope';ctx.textAlign='center';ctx.fillText(emptyText,w/2,h/2);return}
+ let min=Math.min(...vals),max=Math.max(...vals);if(max===min){max+=1;min=Math.max(0,min-1)}
+ let pad=12,pts=vals.map((v,i)=>({x:pad+i*(w-pad*2)/(vals.length-1),y:h-25-(v-min)/(max-min)*(h-55)}));
+ ctx.strokeStyle='#ffffff12';ctx.lineWidth=1;
+ for(let i=0;i<4;i++){let y=15+i*(h-40)/3;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+ let g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,color+'55');g.addColorStop(1,color+'00');
+ ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.lineTo(pts.at(-1).x,h-20);ctx.lineTo(pts[0].x,h-20);ctx.closePath();ctx.fillStyle=g;ctx.fill();
+ ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.stroke();
+ pts.forEach((p,i)=>{ctx.beginPath();ctx.arc(p.x,p.y,3.5,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();ctx.fillStyle='#aeb0c8';ctx.font='9px Manrope';ctx.textAlign='center';ctx.fillText(String(vals[i])+suffix,p.x,p.y-10)});
+}
+function drawChart(){
+ let sleepVals=data.sleep.slice(0,10).reverse().map(x=>Number(x.hours));
+ paintLineChart('weightChart',sleepVals,'#67d5ff','Ajoute plusieurs nuits pour afficher ton rythme de sommeil.',' h');
+ let recent=data.gym.slice(0,10).reverse();
+ // Charge chart uses the latest logged load per session; empty loads are skipped.
+ let gymVals=recent.map(x=>Number(x.load)).filter(v=>Number.isFinite(v)&&v>0);
+ paintLineChart('gymChart',gymVals,'#a78bfa','Ajoute des charges à tes séances pour voir leur évolution.',' kg');
+}
+function exportData(){
+ const payload={app:'ATMANE FILES',version:4,exportedAt:new Date().toISOString(),data};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='atmane-files-backup.json';a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function normalizeImportedData(raw){
+ const v=raw?.data&&typeof raw.data==='object'?raw.data:raw;
+ if(!v||typeof v!=='object'||Array.isArray(v))throw new Error('Structure invalide');
+ const list=(x)=>Array.isArray(x)?x.filter(i=>i&&typeof i==='object').slice(0,200):[];
+ const profile=v.profile&&typeof v.profile==='object'&&!Array.isArray(v.profile)?v.profile:{};
+ const photos=list(v.photos).filter(p=>typeof p.src==='string'&&p.src.startsWith('data:image/')).slice(0,20);
+ return {profile,health:list(v.health),sleep:list(v.sleep),gym:list(v.gym),photos};
+}
+function importData(e){
+ const f=e.target.files[0];if(!f)return;
+ if(f.size>25*1024*1024){alert('Fichier trop volumineux (25 Mo maximum).');e.target.value='';return}
+ const r=new FileReader();
+ r.onload=()=>{
+  try{
+   const v=normalizeImportedData(JSON.parse(r.result));
+   if(!confirm('Remplacer les données actuellement présentes par cette sauvegarde ?'))return;
+   data=v;save();toast('Sauvegarde importée');
+  }catch(err){alert('Fichier de sauvegarde invalide ou incompatible.')}
+  finally{e.target.value=''}
+ };
+ r.readAsText(f);
+}
+function clearData(){if(confirm('Effacer toutes les données locales ? Cette action est irréversible.')){data={profile:{},health:[],sleep:[],gym:[],photos:[]};save()}}
+
+
+let calendarCursor=new Date();calendarCursor.setDate(1);let selectedCalendarDate=localISODate();
+function isoDate(d){return localISODate(d)}
+function changeMonth(delta){calendarCursor.setMonth(calendarCursor.getMonth()+delta);renderCalendar()}
+function renderCalendar(){
+ const grid=$('#calendarGrid');if(!grid)return;
+ $('#calendarTitle').textContent=calendarCursor.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+ const names=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];grid.innerHTML=names.map(n=>`<div class="dayname">${n}</div>`).join('');
+ const first=new Date(calendarCursor),offset=(first.getDay()+6)%7,start=new Date(first);start.setDate(1-offset);
+ for(let i=0;i<42;i++){let d=new Date(start);d.setDate(start.getDate()+i);let key=isoDate(d),inMonth=d.getMonth()===calendarCursor.getMonth();
+  let g=data.gym.some(x=>x.date===key),s=data.sleep.some(x=>x.date===key),h=data.health.some(x=>x.date===key);
+  grid.insertAdjacentHTML('beforeend',`<button class="day ${inMonth?'':'muted'} ${key===selectedCalendarDate?'selected':''} ${key===today?'today':''}" onclick="selectCalendarDate('${key}')">${d.getDate()}<div class="dots">${g?'<i style="background:#a78bfa"></i>':''}${s?'<i style="background:#67d5ff"></i>':''}${h?'<i style="background:#f49ac2"></i>':''}</div></button>`);
+ }
+ renderCalendarEvents();
+}
+function selectCalendarDate(key){selectedCalendarDate=key;renderCalendar()}
+function renderCalendarEvents(){
+ $('#selectedDateLabel').textContent=new Date(selectedCalendarDate+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+ let entries=[...data.gym.filter(x=>x.date===selectedCalendarDate).map(x=>row('⌁',x.exercise,x.group+' · '+(x.load||'—')+' kg',x.date,x.id,'gym')),...data.sleep.filter(x=>x.date===selectedCalendarDate).map(x=>row('☾',x.hours+' h',x.quality,x.date,x.id,'sleep')),...data.health.filter(x=>x.date===selectedCalendarDate).map(x=>row('✚',x.title,x.type,x.date,x.id,'health'))];
+ $('#calendarEvents').innerHTML=entries.join('')||'<div class="empty">Aucune entrée pour cette date.</div>';
+}
+function dateDaysAgo(n){let d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-n);return isoDate(d)}
+function renderInsights(){
+ let cutoff=dateDaysAgo(29),gym=data.gym.filter(x=>x.date>=cutoff),sleep=data.sleep.filter(x=>x.date>=cutoff);
+ $('#monthGym').textContent=gym.length;
+ $('#monthSleep').textContent=sleep.length?(sleep.reduce((a,x)=>a+Number(x.hours||0),0)/sleep.length).toFixed(1)+' h':'—';
+ $('#exerciseCount').textContent=new Set(gym.map(x=>x.exercise.toLowerCase())).size;
+ $('#activeDays').textContent=new Set([...gym,...sleep,...data.health.filter(x=>x.date>=cutoff)].map(x=>x.date)).size;
+ paintLineChart('insightSleepChart',data.sleep.slice(0,10).reverse().map(x=>Number(x.hours)),'#67d5ff','Ajoute des nuits pour afficher la tendance.',' h');
+ paintLineChart('insightGymChart',data.gym.slice(0,10).reverse().map(x=>Number(x.load)).filter(x=>x>0),'#a78bfa','Ajoute des charges pour afficher la tendance.',' kg');
+ let week=dateDaysAgo(6),wg=data.gym.filter(x=>x.date>=week),ws=data.sleep.filter(x=>x.date>=week);
+ let avg=ws.length?(ws.reduce((a,x)=>a+Number(x.hours||0),0)/ws.length).toFixed(1)+' h':'pas assez de données';
+ let groupCount={};wg.forEach(x=>groupCount[x.group]=(groupCount[x.group]||0)+1);
+ let focus=Object.entries(groupCount).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]+' ('+x[1]+')').join(', ')||'aucune séance consignée';
+ window.currentWeeklyReport=`Bilan des 7 derniers jours\nSéances consignées : ${wg.length}\nSommeil moyen : ${avg}\nGroupes les plus consignés : ${focus}\nCe résumé décrit uniquement les entrées enregistrées et ne constitue pas une évaluation médicale.`;
+ $('#weeklyReport').textContent=window.currentWeeklyReport;
+}
+function copyWeeklyReport(){if(navigator.clipboard?.writeText)navigator.clipboard.writeText(window.currentWeeklyReport||'').then(()=>toast('Bilan copié')).catch(()=>toast('Copie non disponible'));else toast('Copie non disponible')}
+function setAccent(){let v=$('#accentChoice').value,colors={violet:['#a78bfa','#67d5ff'],mint:['#75f0c2','#81b8ff'],blue:['#67d5ff','#a78bfa'],rose:['#f49ac2','#a78bfa']};document.documentElement.style.setProperty('--mint',colors[v][0]);document.documentElement.style.setProperty('--blue',colors[v][1]);localStorage.setItem('af_accent',v);toast('Thème appliqué')}
+function loadAccent(){let v=localStorage.getItem('af_accent');if(v&&$('#accentChoice')){$('#accentChoice').value=v;setAccent()}}
+
+let aiHistory=[];
+function clearChat(){aiHistory=[];$('#aiMessages').innerHTML='<div class="activityitem"><div class="activityicon">✦</div><div><strong>ATMANE AI</strong><small>Conversation effacée. Que souhaites-tu examiner ?</small></div></div>'}
+function addChatBubble(role,text){
+ const box=$('#aiMessages'),wrap=document.createElement('div');
+ wrap.className='activityitem';wrap.style.alignItems='flex-start';
+ const icon=document.createElement('div');icon.className='activityicon';icon.textContent=role==='user'?'◉':'✦';
+ const body=document.createElement('div');body.style.minWidth='0';body.style.flex='1';
+ const title=document.createElement('strong');title.textContent=role==='user'?'TOI':'ATMANE AI';
+ const content=document.createElement('div');content.style.cssText='font-size:12px;line-height:1.75;color:#d6deea;white-space:pre-wrap;margin-top:5px';content.textContent=text;
+ body.append(title,content);wrap.append(icon,body);box.append(wrap);box.scrollTop=box.scrollHeight;
+}
+function buildAiContext(){
+ const p=data.profile||{};
+ return {
+  profile:{age:p.age||null,height_cm:p.height||null,activity_level:p.activity||null},
+  recent_sleep:data.sleep.slice(0,10).map(x=>({date:x.date,hours:x.hours,quality:x.quality,energy:x.energy})),
+  recent_training:data.gym.slice(0,12).map(x=>({date:x.date,exercise:x.exercise,muscle_group:x.group,load_kg:x.load,sets_reps:x.sets})),
+  recent_health_notes:data.health.slice(0,8).map(x=>({date:x.date,type:x.type,title:x.title,note:x.note}))
+ };
+}
+$('#aiForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const prompt=$('#aiPrompt').value.trim();if(!prompt)return;
+ if(!$('#aiConsent').checked){toast('Confirme le partage avant l’envoi');return}
+ const includeContext=$('#aiContext').checked;
+ addChatBubble('user',prompt);aiHistory.push({role:'user',content:prompt});
+ $('#aiPrompt').value='';$('#aiSend').disabled=true;$('#aiSend').textContent='Analyse en cours…';
+ const pending=document.createElement('div');pending.className='activityitem';pending.id='aiPending';pending.innerHTML='<div class="activityicon">✦</div><div><strong>ATMANE AI</strong><small>Prépare une réponse…</small></div>';$('#aiMessages').append(pending);
+ try{
+  const response=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:prompt,history:aiHistory.slice(-8,-1),context:includeContext?buildAiContext():null})});
+  const result=await response.json();if(!response.ok)throw new Error(result.error||'Erreur du serveur');
+  $('#aiPending')?.remove();addChatBubble('assistant',result.answer||'Je n’ai pas reçu de réponse exploitable.');aiHistory.push({role:'assistant',content:result.answer||''});
+ }catch(err){$('#aiPending')?.remove();addChatBubble('assistant','Connexion indisponible : '+err.message+'. Vérifie que le serveur ATMANE AI est démarré et que la clé API est configurée.');}
+ finally{$('#aiSend').disabled=false;$('#aiSend').textContent='Envoyer à ATMANE AI ↗';}
+});
+
+window.addEventListener('resize',drawChart);render();loadAccent();
+</script>
+<script>if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+</body></html>

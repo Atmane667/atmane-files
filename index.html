@@ -116,6 +116,13 @@ h1{font-size:clamp(28px,4vw,46px);line-height:1.1;letter-spacing:-2px;margin:8px
   </section>
 
   <section class="page" id="gym">
+<section class="card" style="margin-bottom:15px" id="chatgptImport">
+  <div class="sectionhead"><h2>Ajout depuis ChatGPT</h2><span>IMPORT RAPIDE</span></div>
+  <p class="mini">Demande à ChatGPT de convertir tes performances en JSON, puis colle le résultat ici. Vérifie les valeurs avant l'enregistrement.</p>
+  <div class="field"><label>Données préparées par ChatGPT</label><textarea id="chatgptPayload" placeholder='[{"exercise":"Pec fly","group":"Pectoraux","load":95,"reps":10,"date":"2026-10-24"}]'></textarea></div>
+  <div class="formactions"><button class="btn" type="button" onclick="copyChatGPTFormat()">Copier le format à demander</button><button class="btn primary" type="button" onclick="importChatGPTPerformances()">Ajouter les performances</button></div>
+  <p class="mini">Format accepté : tableau JSON avec exercise, group, load, reps et date. Les données restent dans ce navigateur. Ce bouton ne crée pas une connexion automatique à ChatGPT.</p>
+</section>
     <div class="pagehead"><div class="eyebrow">TRAINING LOG</div><h1>Performances <span class="mint">gym.</span></h1><p class="sub">Garde une trace de tes séances, exercices et sensations.</p></div>
     <div class="grid two"><div class="card"><div class="sectionhead"><h2>Nouvelle performance</h2><span>GYM / 04</span></div><form id="gymForm"><div class="formgrid"><div class="field"><label>Date</label><input name="date" type="date" required></div><div class="field"><label>Groupe musculaire</label><select name="group"><option>Dos</option><option>Pectoraux</option><option>Épaules</option><option>Bras</option><option>Jambes</option><option>Abdominaux</option><option>Full body</option><option>Cardio</option></select></div><div class="field full"><label>Exercice</label><input name="exercise" required placeholder="Ex. Développé couché"></div><div class="field"><label>Charge (kg)</label><input name="load" type="number" min="0" step=".5" placeholder="—"></div><div class="field"><label>Séries × répétitions</label><input name="sets" placeholder="Ex. 3 × 10"></div><div class="field full"><label>Notes</label><textarea name="note" placeholder="Technique, sensations, progression…"></textarea></div></div><div class="formactions"><button class="btn primary">Ajouter la performance</button></div></form></div>
     <div class="card"><div class="sectionhead"><h2>Dernières séances</h2><span>TRAINING HISTORY</span></div><div id="gymList" class="activity"></div></div></div>
@@ -225,6 +232,29 @@ $('#profileForm').addEventListener('submit',e=>{e.preventDefault();data.profile=
 $('#healthForm').addEventListener('submit',e=>{e.preventDefault();data.health.unshift({...Object.fromEntries(new FormData(e.target)),id:Date.now()});e.target.reset();e.target.elements.date.value=today;save()});
 $('#sleepForm').addEventListener('submit',e=>{e.preventDefault();data.sleep.unshift({...Object.fromEntries(new FormData(e.target)),id:Date.now()});e.target.reset();e.target.elements.date.value=today;save()});
 $('#gymForm').addEventListener('submit',e=>{e.preventDefault();data.gym.unshift({...Object.fromEntries(new FormData(e.target)),id:Date.now()});e.target.reset();e.target.elements.date.value=today;save()});
+
+function copyChatGPTFormat(){
+ const instruction='Convertis mes performances sportives en JSON uniquement, sous forme de tableau. Pour chaque entrée utilise exercise, group, load (nombre en kg), reps (nombre), date (YYYY-MM-DD ou chaîne vide si inconnue). N’invente aucune valeur. Exemple : [{"exercise":"Pec fly","group":"Pectoraux","load":95,"reps":10,"date":"2026-10-24"}]';
+ if(navigator.clipboard?.writeText)navigator.clipboard.writeText(instruction).then(()=>toast('Instruction copiée')).catch(()=>toast('Copie indisponible'));
+ else toast('Copie indisponible');
+}
+function importChatGPTPerformances(){
+ const raw=$('#chatgptPayload').value.trim();
+ if(!raw)return toast('Colle d’abord les données JSON');
+ try{
+  const parsed=JSON.parse(raw);
+  if(!Array.isArray(parsed)||!parsed.length||parsed.length>50)throw new Error('Le JSON doit être un tableau de 1 à 50 performances.');
+  const clean=parsed.map((x,i)=>{
+   if(!x||typeof x.exercise!=='string'||!x.exercise.trim())throw new Error('Exercice manquant à la ligne '+(i+1));
+   const load=Number(x.load),reps=Number(x.reps);
+   if(!Number.isFinite(load)||load<=0||!Number.isFinite(reps)||reps<=0)throw new Error('Charge ou répétitions invalides pour '+x.exercise);
+   return {id:Date.now()+i,exercise:x.exercise.trim().slice(0,100),group:typeof x.group==='string'?x.group.trim().slice(0,60):'',load:String(load),sets:String(reps),date:typeof x.date==='string'&&/^\\d{4}-\\d{2}-\\d{2}$/.test(x.date)?x.date:'',source:'chatgpt-import'};
+  });
+  if(!confirm('Ajouter '+clean.length+' performance(s) à ton historique ?'))return;
+  data.gym.unshift(...clean);$('#chatgptPayload').value='';save();toast(clean.length+' performance(s) ajoutée(s)');
+ }catch(err){alert('Import impossible : '+err.message)}
+}
+
 function row(icon,title,sub,date,id,type){return `<div class="activityitem"><div class="activityicon">${icon}</div><div style="min-width:0"><strong>${esc(title)}</strong><small>${esc(sub||'')}</small></div><time>${esc(date||'')}</time>${id?`<button class="btn" style="padding:5px 8px" onclick="removeItem('${type}',${id})">×</button>`:''}</div>`}
 function removeItem(type,id){if(!confirm('Supprimer cette entrée ?'))return;data[type]=data[type].filter(x=>x.id!==id);save()}
 function render(){
